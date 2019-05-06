@@ -7,5 +7,5 @@
 int main(){
   
   return 0;
-  printf("Test"/n);
+  printf("Test"\n);
 }
