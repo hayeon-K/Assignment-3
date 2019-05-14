@@ -207,7 +207,8 @@ int is_admin (int ID) {
 
 
 /*******************************************************************************
- * Function Description
+ * Function searchs through the student database to locate whether a student 
+ * number is within the database.
  * Author: Tom Harris
 *******************************************************************************/
 void search_for_student(){
@@ -215,7 +216,8 @@ void search_for_student(){
 }
 
 /*******************************************************************************
- * Function Description
+ * This function allows the user to edit and then update their details
+ * in the database 
  * Author: David Bui
 *******************************************************************************/
 void edit_details(){
@@ -223,7 +225,8 @@ void edit_details(){
 }
 
 /*******************************************************************************
- * Function Description
+ * Function prints the history for either the day, month or year of previous 
+ * transactions, depending on what the user has selected.
  * Author: Mitch Winyard
 *******************************************************************************/
 
@@ -232,7 +235,7 @@ void print_transactions(){
 }
 
 /*******************************************************************************
- * Function Description
+ * This function adds a new students to the student database
  * Author: Mitch Winyard
 *******************************************************************************/
 
@@ -241,7 +244,7 @@ void add_student (){
 }
 
 /*******************************************************************************
- * Function Description
+ * This function encrypts the student database file
  * Author: Joel Morrison
 *******************************************************************************/
 
@@ -250,7 +253,7 @@ void encrypt (){
 }
 
 /*******************************************************************************
- * Function Description
+ * This function compresses the database file
  * Author: David Bui
 *******************************************************************************/
 void compress (){
