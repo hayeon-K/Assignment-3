@@ -79,7 +79,7 @@ void register_user();
 int save_db(const user_t *users_p);
 int load_user(user_t *users_p);
 int is_admin (int ID);
-void search();
+void search_for_student();
 void edit();
 void print();
 void add ();
@@ -210,7 +210,7 @@ int is_admin (int ID) {
  * Function Description
  * Author: Tom Harris
 *******************************************************************************/
-void search(){
+void search_for_student(){
     
 }
 
