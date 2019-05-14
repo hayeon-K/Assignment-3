@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 
-
 #define MAX_NO_ITEMS 9
 #define MAX_NO_FIRSTNAME 20
 #define MAX_NO_LASTNAME 20
@@ -16,7 +15,10 @@
 #define STUDENT_DB_NAME "students"
 #define TRANSACTION_DB_NAME "transactions"
 
-/*Insert structs here*/
+
+/*******************************************************************************
+ * Structs Defined Here
+*******************************************************************************/
 struct payment{
     char student_id[MAX_NO_STUDENT_ID];
     int card_number;
@@ -63,18 +65,30 @@ struct item{
 typedef struct item item_t;
 
 
-/*functions*/
+
+/*******************************************************************************
+ * Function prototypes 
+*******************************************************************************/
 void load_items(item_t *items);
+void intro_prompt();
 void login(user_t *users);
+void open_user_prompt();
+void open_admin_prompt();
+void open_user_console(user_t user);
+void register_user();
+int save_db(const user_t *users_p);
+int load_user(user_t *users_p);
+int is_admin (int ID);
 void menu();
 void search();
 void edit();
 void print();
-void add();
-void intro_prompt();
-void register_user();
-int load_user(user_t *users_p);
-void open_user_console(user_t user);
+void add ();
+
+
+/*******************************************************************************
+ * Main
+*******************************************************************************/
 int main (void)
 {
     item_t items[MAX_NO_ITEMS];
@@ -87,13 +101,19 @@ int main (void)
   
 }
 
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
+
 void load_items(item_t *items){
-    /*draft items
-     *TBU later
-    */
+    
 }
 
-
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 void intro_prompt(){
     printf("\n"
     "Welcome to UTS uniform order page\n"
@@ -103,7 +123,10 @@ void intro_prompt(){
     "Enter choice 1 - 3>\n");
 }
 
-/*Insert function protoypes here*/
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 void login(user_t *users) {
     char login_id[MAX_NO_STUDENT_ID]; 
     char password[MAX_NO_PASSWORD];
@@ -113,7 +136,10 @@ void login(user_t *users) {
 
 
 }
-
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 
 void open_user_prompt(){
     printf("\n"
@@ -124,7 +150,10 @@ void open_user_prompt(){
     "4. Exit\n"
     "Enter choice 1 - 4>\n");
 }
-
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 void open_admin_prompt(){
     printf("\n"
     "Hello, You are in administration mode\n"
@@ -134,99 +163,84 @@ void open_admin_prompt(){
     "4. Exit\n"
     "Enter choice 1 - 4>\n");
 }
-
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 
 void open_user_console(user_t user){
-    if(!user.is_admin) {
 
-        open_user_prompt();
-    } else {
-        open_admin_prompt();
-    }
 }
 
-
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 void register_user(){
 
 }
 
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 int save_db(const user_t *users_p){
-     /* Pointer to the file */
-    FILE *fp;
-
-     /* Opening a file in w mode*/
-    fp = fopen(STUDENT_DB_NAME, "w");
-
-    /* If there is issue opening file, print error message and finish */
-    if(fp == NULL){
-        printf("Write error\n");
-        return 1;
-    } 
-
-    /* int variable for for loop */
-    int i;
-
-    /* loop the number of flights and write to file in certain format, 
-        changing line with each flight  */
-    for(i = 0; i < MAX_NO_USERS; i++){
-        fprintf(fp, "%s %s %s %d %d %d %s %d %d",
-               users_p[i].first_name, users_p[i].last_name, users_p[i].user_id,
-               users_p[i].birthdate.day, 
-               users_p[i].birthdate.month, users_p[i].birthdate.year, 
-               users_p[i].password, 
-               users_p[i].payment_valid, users_p[i].is_admin);
-    }
-
-    /* close file */
-    fclose(fp);
-    return 0;
+  
 }
 
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 int load_user(user_t *users_p){
-     /* Pointer to the file */
-    FILE *fp;
-
-     /* Opening a file in r mode */
-    fp = fopen(STUDENT_DB_NAME, "r");
-
-    /* If fp is NULL, print error message and finish */ 
-    if(fp == NULL){
-        printf("Students not loaded. Is database in right folder? \n");
-        return 1;
-    } 
-
-    /* variable for while loop */
-    int i = 0;
-
-    /* while incrementing i is not equal to no_of_lines which 
-        stores the number of new lines (=flights) in text file,
-        read from file and store that into flights array */
-    while(i != MAX_NO_USERS){
-        fscanf(fp, "%s %s %s %d %d %d %s %d %d",
-               users_p[i].first_name, users_p[i].last_name, users_p[i].user_id,
-               &users_p[i].birthdate.day, 
-               &users_p[i].birthdate.month, &users_p[i].birthdate.year, 
-               users_p[i].password, 
-               &users_p[i].payment_valid, &users_p[i].is_admin);
-        i++;
-    }
-    /* close file */
-    fclose(fp);
-    return 0;
+    
 }
-
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 int is_admin (int ID) {
-    return 0;
+
 }
 
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
 void menu() {
-    printf("1. ");
+    
 }
 
-void search();
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
+void search(){
+    
+}
 
-void edit();
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
+void edit(){
+    
+}
 
-void print();
 
-void add ();
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
+
+void print(){
+    
+}
+/*******************************************************************************
+ * Function Description
+ * 
+*******************************************************************************/
+
+void add (){
+
+}
