@@ -113,7 +113,7 @@ void load_items(item_t *items){
 }
 
 /*******************************************************************************
- * Function Description
+ * This prints the inital welcome prompt.
  * Author: Hayeon Kim
 *******************************************************************************/
 void intro_prompt(){
@@ -139,7 +139,8 @@ void login(user_t *users) {
 
 }
 /*******************************************************************************
- * Function Description
+ * This function prints the available options for the student 
+ * user to chose from.
  * Author: Hayeon Kim
 *******************************************************************************/
 
@@ -153,7 +154,7 @@ void open_user_prompt(){
     "Enter choice 1 - 4>\n");
 }
 /*******************************************************************************
- * Function Description
+ * This function prints the available options for the admin to chose from.
  * Author: Hayeon Kim
 *******************************************************************************/
 void open_admin_prompt(){
