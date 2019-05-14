@@ -25,7 +25,7 @@ struct payment{
     int CVC;
 };
 typedef struct payment payment_t;
-
+//changing
 struct date{
     int day;
     int month;
