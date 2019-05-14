@@ -79,7 +79,6 @@ void register_user();
 int save_db(const user_t *users_p);
 int load_user(user_t *users_p);
 int is_admin (int ID);
-void menu();
 void search();
 void edit();
 void print();
@@ -206,13 +205,6 @@ int is_admin (int ID) {
 
 }
 
-/*******************************************************************************
- * Function Description
- * Author: Joel Morrison
-*******************************************************************************/
-void menu() {
-    
-}
 
 /*******************************************************************************
  * Function Description
