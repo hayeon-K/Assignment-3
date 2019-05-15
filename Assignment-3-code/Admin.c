@@ -25,6 +25,14 @@ void open_admin_prompt(){
 void search_for_student(){
     
 }
+/*******************************************************************************
+ * This function adds a new students to the student database
+ * Author: Mitch Winyard
+*******************************************************************************/
+
+void add_student (){
+
+}
 
 /*******************************************************************************
  * This function allows the user to edit and then update their details
@@ -43,15 +51,6 @@ void edit_details(){
 
 void print_transactions(){
     
-}
-
-/*******************************************************************************
- * This function adds a new students to the student database
- * Author: Mitch Winyard
-*******************************************************************************/
-
-void add_student (){
-
 }
 
 /*******************************************************************************
