@@ -7,6 +7,12 @@
 #include <string.h>
 #include <math.h>
 
+#include "admin.h"
+#include "compression.h"
+#include "encryption.h"
+#include "interface.h"
+#include "student.h"
+
 #define MAX_NO_ITEMS 9
 #define MAX_NO_FIRSTNAME 20
 #define MAX_NO_LASTNAME 20
@@ -63,7 +69,7 @@ typedef struct trasaction trasaction_t;
 struct item{
     int item_id;
     char item_name[MAX_NO_ITEM_NAME];
-    double item_price; 
+    double item_price;
     char item_size;
 };
 typedef struct item item_t;
@@ -71,12 +77,11 @@ typedef struct item item_t;
 
 
 /*******************************************************************************
- * Function prototypes 
+ * Function prototypes
 *******************************************************************************/
 void load_items(item_t *items);
 void intro_prompt();
 void login(user_t *users);
-void open_user_prompt();
 void open_admin_prompt();
 void open_user_console(user_t user);
 void register_user();
@@ -101,10 +106,6 @@ int main (void)
     load_items(items);
     user_t users[MAX_NO_USERS];
     load_user(users);
-    
-
     /*menu would loop unless user enters 3 */
-  
+    open_user_prompt
 }
-
-
