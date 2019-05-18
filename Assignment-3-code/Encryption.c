@@ -16,14 +16,14 @@ void encrypt ()
     if(fpts==NULL) /* If the student_database.txt file is not found, return this error message */
     {
         printf(" ERROR - File does not exist, or error in opening.\n");
-		exit(1);
+		return;
     }
     fptt=fopen("temp.txt", "w"); /* Creates/opens a file called temp.txt in write mode */
     if (fptt==NULL) /* If the system is unable to create a temp.txt file, return this error message */
     {
         printf(" ERROR - Error in creation of file 'temp.txt'\n");
 		fclose(fpts);
-		exit(2);
+		return;
     }
     while(1)
     {
@@ -46,14 +46,14 @@ void encrypt ()
 	if(fpts==NULL) /* If the student_database.txt file is not found, return this error message */
 	{
 		printf(" ERROR - File does not exist, or error in opening.\n");
-		exit(3);
+		return;
 	}
 	fptt=fopen("temp.txt", "r"); /* Opens the temp.txt file in read-only mode */
 	if(fptt==NULL) /* If the temp.txt file is not found, return this error message */
 	{
 		printf(" ERROR - Error in creation of file 'temp.txt'\n");
 		fclose(fpts);
-		exit(4);
+		return;
 	}
 	while(1)
 	{
