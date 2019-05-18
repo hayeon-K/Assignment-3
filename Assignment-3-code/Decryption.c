@@ -1,21 +1,25 @@
+/*******************************************************************************
+ * DECRYPTION
+*******************************************************************************/
+
+/*******************************************************************************
+ * This function decrypts the student database file
+ * Author: Mitch Winyard
+*******************************************************************************/
+
+void encrypt ()
 {
-    char fname[20], ch;
+    ch;
     FILE *fpts, *fptt;
 
-    printf("\n Decrypt a text file :\n");
-	printf("--------------------------\n"); 	
-	
-	printf(" Input the name of file to encrypt : ");
-	scanf("%s",fname);	
-
-    fpts=fopen(fname, "r");
-    if(fpts==NULL)
+    fpts=fopen(student_database.txt, "r"); /* Opens the student_database.txt file in read-only mode */
+    if(fpts==NULL) /* If the student_database.txt file is not found, return this error message */
     {
         printf(" ERROR - File does not exist, or error in opening.\n");
 		exit(1);
     }
-    fptt=fopen("temp.txt", "w");
-    if (fptt==NULL)
+    fptt=fopen("temp.txt", "w"); /* Creates/opens a file called temp.txt in write mode */
+    if (fptt==NULL) /* If the system is unable to create a temp.txt file, return this error message */
     {
         printf(" ERROR - Error in creation of file 'temp.txt'\n");
 		fclose(fpts);
@@ -23,27 +27,27 @@
     }
     while(1)
     {
-        ch=fgetc(fpts);
-        if(ch==EOF)
+        ch=fgetc(fpts); /* Read each char in the file including spaces and newlines */
+        if(ch==EOF) /* Stop reading at end of file */
         {
             break;
         }
-        else
+        else /* Replace ASCII value of the ciphered text with new value, thus returning it to the original plain text value */
         {
-            ch=ch-(11);
+            ch=ch-(11*17);
             fputc(ch, fptt);
         }
     }
     fclose(fpts);
-	fclose(fptt);
-	fpts=fopen(fname, "w");
-	if(fpts==NULL)
+	fclose(fptt); /* Save and close both files */
+	fpts=fopen(student_database.txt, "w"); /* Opens the student_database.txt file in write mode */
+	if(fpts==NULL) /* If the student_database.txt file is not found, return this error message */
 	{
 		printf(" ERROR - File does not exist, or error in opening.\n");
 		exit(3);
 	}
-	fptt=fopen("temp.txt", "r");
-	if(fptt==NULL)
+	fptt=fopen("temp.txt", "r"); /* Opens the temp.txt file in read-only mode */
+	if(fptt==NULL) /* If the temp.txt file is not found, return this error message */
 	{
 		printf(" ERROR - Error in creation of file 'temp.txt'\n");
 		fclose(fpts);
@@ -51,20 +55,20 @@
 	}
 	while(1)
 	{
-		ch=fgetc(fptt);
-		if(ch==EOF)
+		ch=fgetc(fptt); /* Read each char in the file including spaces and newlines */
+		if(ch==EOF)  /* Stop reading at end of file */
 		{
 			break;
 		}
 		else
 		{
-			fputc(ch, fpts);
+			fputc(ch, fpts); /* Replace each corresponding char in student_database.txt with the data from temp.txt */
 		}
 	}
-	printf(" File %s successfully decrypted\n\n", fname);
-	fclose(fpts);
+
+	fclose(fpts); /* Save and close both files */
 	fclose(fptt);
 
-    return 0;
+    return;
 
 }
