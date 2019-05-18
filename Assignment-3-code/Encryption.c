@@ -7,8 +7,8 @@
  * Author: Mitch Winyard
 *******************************************************************************/
 
-void encrypt (){
-    {
+void encrypt ()
+{
     ch;
     FILE *fpts, *fptt;
 
@@ -71,8 +71,8 @@ void encrypt (){
 	fclose(fpts); /* Save and close both files */
 	fclose(fptt);
 
-    return 0;
+    return;
 
 }
-}
+
 
