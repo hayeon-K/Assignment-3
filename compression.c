@@ -4,7 +4,9 @@
 
 
 #define MAX_CODE 22
-#define MAX_TRANSACTIONS 100
+#define MAX_TRANSACTIONS 10
+#define COMPRESSED_DATABASE "compressed_huffman"
+#define DECOMPRESSED_DATABASE "decompressed.bin"
 
 struct transaction{
     int user_id;
@@ -225,7 +227,7 @@ void create_compression(code_t * codes, transaction_t * transactions, int size){
     FILE *fp;
 
      /* Opening a file in r mode */
-    fp = fopen("compressed_huffman", "w");
+    fp = fopen(COMPRESSED_DATABASE, "w");
 
     /* If fp is NULL, print error message and finish */ 
       if(fp == NULL){
@@ -257,7 +259,7 @@ void decompress_to_file(){
     FILE *rfp;
     char huffmaned[1000] = {'\0'};    
      /* Opening a file in r mode */
-    rfp = fopen("compressed_huffman", "r");
+    rfp = fopen(COMPRESSED_DATABASE, "r");
 
     /* If fp is NULL, print error message and finish */ 
     if(rfp == NULL){
@@ -302,7 +304,7 @@ transaction_t * read_database(int *tr_size){
     size_t result; 
  
 
-    fp = fopen("decompressed.bin", "rb");
+    fp = fopen(DECOMPRESSED_DATABASE, "rb");
     /* If fp is NULL, print error message and finish */ 
     if(fp == NULL){
         printf("Read error\n");
@@ -349,7 +351,7 @@ transaction_t * read_database(int *tr_size){
 
 void remove_database(){
     int status;
-    char filename[] = "decompressed.bin";
+    char filename[] = DECOMPRESSED_DATABASE;
     status = remove(filename);
  
     if (status != 0)    
