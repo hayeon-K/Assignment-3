@@ -91,7 +91,7 @@ int main (void)
                     login_as_admin(users, &no_of_user);
                     break;
                 case 3:
-                    break;
+                    exit(0); break;
                 default:      /* when user input is digit but not 1-5 */
                     printf("Invalid choice \n"); 
                     break;
