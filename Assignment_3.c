@@ -445,7 +445,7 @@ void order_uniform(user_t user){
             printf("Invalid choice \n"); 
             break;
     }    
-
+    if(choice > 6 || choice < 0) {return;}
     int i, size = 0 ; 
     transaction_t * transactions;
     transaction_t * temp;
