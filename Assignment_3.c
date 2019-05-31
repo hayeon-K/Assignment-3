@@ -13,18 +13,18 @@
 #define MAX_NO_USERS 20
 #define MAX_NO_PASSWORD 20
 #define MAX_NO_ITEM_NAME 10
-#define MAX_NO_CARD 17
-#define MAX_NO_CVC 4
-#define MAX_NO_PHONE 11
+#define MAX_NO_CARD 16
+#define MAX_NO_CVC 3
+#define MAX_NO_PHONE 10
 #define STUDENT_DB_NAME "students"
 #define TRANSACTION_DB_NAME "transactions"
 
 /*Insert structs here*/
 struct payment{
-    char card_number[MAX_NO_CARD];
+    char card_number[MAX_NO_CARD+1];
     int month;
     int year;
-    char cvc[MAX_NO_CVC];
+    char cvc[MAX_NO_CVC+1];
 };
 typedef struct payment payment_t;
 
@@ -33,22 +33,21 @@ struct user{
     char last_name[MAX_NO_LASTNAME];
     int user_id;
     char password[MAX_NO_PASSWORD];
-    char phone[MAX_NO_PHONE];
+    char phone[MAX_NO_PHONE+1];
     payment_t payment; 
 };
 typedef struct user user_t;
 
 /*functions*/
-void login(user_t *users);
+void login(user_t * users, int * no_of_user);
 void login_as_admin(user_t *users, int * no_of_user);
 void intro_prompt();
 void item_prompt();
 int load_user(user_t *users_p, int * no_of_user);
-void open_user_console(user_t user);
+void open_user_console(user_t user, user_t * users, int index, int * no_of_user);
 void open_admin_console(user_t *users, int * no_of_user);
 void order_uniform(user_t user);
 void view_my_transaction(user_t user);
-void update_payment(user_t user);
 void view_transactions();
 void search_transaction();
 void search_student(user_t *users);
@@ -61,7 +60,11 @@ int existing_student(int id, user_t * users);
 int check_user_name(char * user_input, char * name);
 void add_student(user_t *users, int * no_of_user);
 int no_of_lines();
-int save_db(const user_t *users_p, int * no_of_user);
+int save_student_db(const user_t *users_p, int * no_of_user);
+void update_payment(user_t * users, int index, int * no_of_user);
+void view_my_details(user_t * users, int index); 
+void center(char * s, int length, int width);
+void expiry(char * expiry, int month, int year);
 
 int main (void)
 {
@@ -82,7 +85,7 @@ int main (void)
         } else {     /* if user input is digit */
             switch(choice){
                 case 1: 
-                    login(users);
+                    login(users, &no_of_user);
                     break;
                 case 2:
                     login_as_admin(users, &no_of_user);
@@ -160,12 +163,14 @@ void login_as_admin(user_t *users, int *no_of_user) {
     }
 }
 
-void login(user_t *users) {
+void login(user_t * users, int * no_of_user) {
     char user_input[1000] = {};
     int login_id, i; 
     char password[MAX_NO_PASSWORD];
     int existing_user = 1;
     user_t user;
+    int index = 0;
+
     while ((getchar()) != '\n'); 
     while(existing_user){
         printf("Enter your id: \n");
@@ -174,6 +179,7 @@ void login(user_t *users) {
             for(i = 0; i < MAX_NO_USERS; i++){
                 if(login_id == users[i].user_id){
                     user = users[i];
+                    index = i;
                     existing_user = 0; 
                 } 
             }
@@ -190,7 +196,7 @@ void login(user_t *users) {
         scanf("%s", password); 
         if(!strcmp(password, user.password)){
             printf("Welcome, %s \n", user.first_name);
-            open_user_console(user);
+            open_user_console(user, users, index, no_of_user);
             right_password = 0;
         } else {
             printf("Invalid password. Please check again! \n");
@@ -198,15 +204,15 @@ void login(user_t *users) {
     }
 }
 
-
 void open_user_prompt(){
     printf("\n"
     "Welcome to UTS uniform order page\n"
     "1. Order uniform\n"
     "2. View your transaction\n"
-    "3. Update my payment details\n"
-    "4. Exit\n"
-    "Enter choice 1 - 4>\n");
+    "3. View my details\n"
+    "4. Update my payment details\n"
+    "5. Exit\n"
+    "Enter choice 1 - 5>\n");
 }
 
 void open_admin_prompt(){
@@ -215,13 +221,14 @@ void open_admin_prompt(){
     "1. View all transactions\n"
     "2. Search for trasactions\n"
     "3. Search for student\n"
-    "4. Exit\n"
+    "4. Add new student\n"
+    "5. Exit\n"
     "Enter choice 1 - 5>\n");
 }
 
-void open_user_console(user_t user){
+void open_user_console(user_t user, user_t * users, int index, int * no_of_user){
     int choice;
-    while(choice != 4){ 
+    while(choice != 5){ 
         open_user_prompt();    /* print login prompt */
         if(scanf("%d", &choice) != 1){     /* if user input is NOT digit */    
             while ((getchar()) != '\n');      /* flush input buffer */
@@ -235,8 +242,12 @@ void open_user_console(user_t user){
                     view_my_transaction(user);
                     break;
                 case 3:
+                    view_my_details(users, index);
                     break;
                 case 4:
+                    update_payment(users, index, no_of_user);
+                    break;
+                case 5:
                     break;
                 default:      /* when user input is digit but not 1-5 */
                     printf("Invalid choice \n"); 
@@ -277,8 +288,8 @@ void open_admin_console(user_t *users, int *no_of_user){
     } 
 }
 
-/*****************************************************************************/
-int save_db(const user_t *users_p, int * no_of_user){
+
+int save_student_db(const user_t *users_p, int * no_of_user){
      /* Pointer to the file */
     FILE *fp;
 
@@ -296,7 +307,7 @@ int save_db(const user_t *users_p, int * no_of_user){
 
     /* loop the number of flights and write to file in certain format, 
         changing line with each flight  */
-    for(i = 0; i < MAX_NO_USERS; i++){
+    for(i = 0; i < * no_of_user; i++){
         fprintf(fp, "%s %s %d %s %s %s %d %d %s\n",
                users_p[i].first_name, users_p[i].last_name, users_p[i].user_id,
                users_p[i].password, users_p[i].phone, users_p[i].payment.card_number, users_p[i].payment.month,
@@ -427,6 +438,7 @@ void order_uniform(user_t user){
     transaction_t * transactions;
     transaction_t * temp;
     temp = read_database(&size);
+    remove_database();
     transactions = (transaction_t*) malloc (sizeof(transaction_t) * (size + 1));
     for(i = 0 ; i < size; i++){
         transactions[i]= temp[i];
@@ -452,6 +464,7 @@ void view_my_transaction(user_t user){
     int i, size = 0;
     decompress_to_file();
     transactions = read_database(&size);
+    remove_database();
     transaction_t transaction; 
     for(i = 0 ; i < size; i++){
         if(user.user_id == transactions[i].user_id){
@@ -476,11 +489,34 @@ int has_transaction(user_t user){
     return 0;
 }
 
+void view_my_details(user_t * users, int index){
+    printf("PERSONAL DETAILS\n");
+    printf("First Name      Last Name       Student ID      Phone Number \n");
+    printf("--------------- --------------- --------------- --------------- \n");
+    printf("%-15s %-15s %-15d %-15s\n\n", users[index].first_name, users[index].last_name, users[index].user_id, users[index].phone);
+    char expiry_date[6];
+    expiry(expiry_date, users[index].payment.month, users[index].payment.year);
+    printf("PAYMENT DETAILS\n");
+    printf("Card Number          Expiry Date     CVC \n");
+    printf("-------------------- --------------- ------\n");
+    printf("%-20s %-15s %-5s\n",
+             users[index].payment.card_number, expiry_date, users[index].payment.cvc);
+} 
+
+void expiry(char * expiry, int month, int year){
+    int i = 0;
+    sprintf(&expiry[i], "%02d", month);
+    strcat(expiry, "/");
+    i = strlen(expiry);
+    i += sprintf(&expiry[i], "%02d", year); 
+}
+
 void view_transactions(){
     transaction_t * transactions; 
     int i, size = 0;
     decompress_to_file();
     transactions = read_database(&size);
+    remove_database();
     printf("Transaction User ID  Item purchased  Quantity\n");
     printf("-------------------- --------------- ---------------\n");
     for(i = 0 ; i < size; i++){
@@ -500,6 +536,7 @@ void search_transaction(){
     decompress_to_file();
     int has_item = 0;
     transactions = read_database(&size);
+    remove_database();
     transaction_t transaction; 
     for(i = 0 ; i < size; i++){
         if(login_id == transactions[i].user_id){
@@ -608,7 +645,7 @@ void add_student(user_t *users, int * no_of_user) {
     for(valid_id = 0; valid_id < *no_of_user; valid_id ++){
        printf("%-15s %-15s %-15d %-15s\n", users[valid_id].first_name, users[valid_id].last_name, users[valid_id].user_id, users[valid_id].phone);
     }
-    save_db(users, no_of_user);
+    save_student_db(users, no_of_user);
 }
 
 int check_user_name(char * user_input,char * name){
@@ -629,10 +666,79 @@ int check_user_name(char * user_input,char * name){
             name[i] = user_input[i] + 32;
         } else if (user_input[i] >= 'a' && user_input[i] <= 'z'){
             name[i] = user_input[i];
-        } else {
         }
     }
 
     return 1;
 }
+
+
+void update_payment(user_t * users, int index, int * no_of_user){
+    char expiry_date[6];
+    expiry(expiry_date, users[index].payment.month, users[index].payment.year);
+
+    payment_t new;
+    printf("Enter new card number: ");
+    scanf("%s", new.card_number);
+    printf("Enter new expiry year: ");
+    scanf("%d", &new.year);
+    printf("Enter new expiry month: ");
+    scanf("%d", &new.month);
+    printf("Enter new card cvc: ");
+    scanf("%s", new.cvc);
+
+    printf("CURRENT PAYMENT DETAILS\n");
+    printf("Card Number          Expiry Date     CVC \n");
+    printf("-------------------- --------------- ------\n");
+    printf("%-20s %-15s %-5s\n\n",
+             users[index].payment.card_number, expiry_date, users[index].payment.cvc);
+
+    expiry(expiry_date, new.month, new.year);
+    printf("NEW PAYMENT DETAILS\n");
+    printf("Card Number          Expiry Date     CVC \n");
+    printf("-------------------- --------------- ------\n");
+    printf("%-20s %-15s %-5s\n\n",
+             new.card_number, expiry_date, new.cvc);
+    while ((getchar()) != '\n'); 
+    printf("Do you want to update new payment details? y/n\n");
+    char choice;
+    scanf("%c", &choice);
+
+    if(choice == 'y'){
+        strcpy(users[index].payment.card_number, new.card_number);
+        users[index].payment.month = new.month;
+        users[index].payment.year = new.year;
+        strcpy(users[index].payment.cvc, new.cvc);
+        save_student_db(users, no_of_user);
+    } else if (choice == 'n') {
+        printf("Going back to main without saving");
+    } else {
+        printf("Invalid choice; going back to menu");
+    }
+}
+
+int check_card_number(char * user_input, char * card_number){
+    if(strlen(user_input) > MAX_NO_CARD + 1){ 
+        return 0; 
+    }
+    int i;
+    for(i = 0; i < MAX_NO_CARD + 1 ; i++){
+        if(!is_right_format_number(user_input[i])){
+            return 0;
+        }
+    }
+
+    for(i = 1; i < strlen(user_input) + 1; i++){ 
+        if(user_input[i] >= 'A' && user_input[i] <= 'Z'){
+            name[i] = user_input[i] + 32;
+        } else if (user_input[i] >= 'a' && user_input[i] <= 'z'){
+            name[i] = user_input[i];
+        }
+    }
+
+    return 1;
+}
+
+
+
 
