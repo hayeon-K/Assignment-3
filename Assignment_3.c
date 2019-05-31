@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,7 +18,6 @@
 #define MAX_NO_CVC 3
 #define MAX_NO_PHONE 10
 #define STUDENT_DB_NAME "students"
-#define TRANSACTION_DB_NAME "transactions"
 
 /*Insert structs here*/
 struct payment{
@@ -65,6 +65,10 @@ void update_payment(user_t * users, int index, int * no_of_user);
 void view_my_details(user_t * users, int index); 
 void center(char * s, int length, int width);
 void expiry(char * expiry, int month, int year);
+int check_card_number(char * user_input, char * card_number);
+int check_year(char * user_input, int * year);
+int check_month(char * user_input, int * month, int year);
+int check_cvc(char * user_input, char * cvc);
 
 int main (void)
 {
@@ -91,8 +95,8 @@ int main (void)
                     login_as_admin(users, &no_of_user);
                     break;
                 case 3:
-                    exit(0); break;
-                default:      /* when user input is digit but not 1-5 */
+                    exit(0);
+;                default:      /* when user input is digit but not 1-5 */
                     printf("Invalid choice \n"); 
                     break;
             }    
@@ -136,6 +140,7 @@ int is_right_format_number(char c){
     }
     return 0;
 }
+
 /*Insert function protoypes here*/
 void login_as_admin(user_t *users, int *no_of_user) {
     char login_id[5]; 
@@ -145,18 +150,10 @@ void login_as_admin(user_t *users, int *no_of_user) {
     while(is_admin){
         printf("Enter your id \n");
         printf("(or enter EXIT to return back to Main Menu ) \n");
+
         scanf("%s", login_id);
-        if(!strcmp(login_id, "admin")) 
-        { 
-        	is_admin = 0; 
-        } 
-        else if (strcmp(login_id, "EXIT")==0) 
-        {
-          main();
-     	} 
-
-
-
+        if(!strcmp(login_id, "admin")) { is_admin = 0; } 
+        else if (strcmp(login_id, "EXIT")==0) { return; } 
         else { printf("Invalid admin username. Please check again! \n"); }
     }
     int right_password = 1;
@@ -189,9 +186,8 @@ void login(user_t * users, int * no_of_user) {
         fgets(user_input, 10000 ,stdin); 
 
         if (strcmp(user_input, "EXIT")==10){
-        		main();
+            return;
         }
-
         if(check_user_id_input(user_input, &login_id) == 1){
             for(i = 0; i < MAX_NO_USERS; i++){
                 if(login_id == users[i].user_id){
@@ -362,7 +358,6 @@ int load_user(user_t *users_p, int * no_of_user){
                users_p[i].payment.cvc);
         i++;
     }
-    printf("%d %d", no_of_lines(), i);
     *no_of_user = i;
     /* close file */
     fclose(fp);
@@ -414,7 +409,7 @@ void item_prompt(){
 
 void order_uniform(user_t user){
     if(has_transaction(user)){
-        printf("Cannot make another transaction. You already made one transaction.");
+        printf("Cannot make another transaction. You already made one transaction.\n");
         return;
     }
     char * item_name;
@@ -474,7 +469,7 @@ void order_uniform(user_t user){
 
 void view_my_transaction(user_t user){
     if(!has_transaction(user)){
-        printf("You have NO transaction yet.");
+        printf("You have NO transaction yet.\n");
         return;
     }
     transaction_t * transactions; 
@@ -590,7 +585,7 @@ void search_student(user_t *users){
         printf("--------------- --------------- --------------- --------------- \n");
         printf("%-15s %-15s %-15d %-15s\n", user.first_name, user.last_name, user.user_id, user.phone);
     } else {
-        printf("No students in database");
+        printf("No students in database\n");
     }
 }
 
@@ -627,7 +622,7 @@ void add_student(user_t *users, int * no_of_user) {
                 valid_id = 0; 
             }
         } else {
-            printf("Your input is not valid");
+            printf("Your input is not valid\n");
         }
     }
 
@@ -638,6 +633,8 @@ void add_student(user_t *users, int * no_of_user) {
             first_name[strlen(first_name)-1] ='\0';
             strcpy(new.first_name, first_name); 
             valid_firstname = 0;
+        } else {
+            printf("Your input is not valid\n");
         }
     }
     while(valid_lastname){
@@ -647,6 +644,8 @@ void add_student(user_t *users, int * no_of_user) {
             last_name[strlen(last_name)-1] ='\0';
             strcpy(new.last_name, last_name); 
             valid_lastname = 0;
+        } else {
+            printf("Your input is not valid\n");
         }
     }
 
@@ -694,15 +693,65 @@ void update_payment(user_t * users, int index, int * no_of_user){
     char expiry_date[6];
     expiry(expiry_date, users[index].payment.month, users[index].payment.year);
 
+    while ((getchar()) != '\n');  
+    int valid_card_no = 1;
+    int valid_month = 1;
+    int valid_year = 1;
+    int valid_cvc = 1;
+
+    int month= 1;
+    int year = 1;
+    char user_input[1000] = {};
+    char card_no[MAX_NO_CARD];
+    char cvc[MAX_NO_CVC];
     payment_t new;
-    printf("Enter new card number: ");
-    scanf("%s", new.card_number);
-    printf("Enter new expiry year: ");
-    scanf("%d", &new.year);
-    printf("Enter new expiry month: ");
-    scanf("%d", &new.month);
-    printf("Enter new card cvc: ");
-    scanf("%s", new.cvc);
+
+    while(valid_card_no){
+        printf("Enter new card number (16 digits):\n");
+        fgets(user_input, 100 ,stdin); 
+        if(check_card_number(user_input, card_no)){
+            strcpy(new.card_number, card_no); 
+            valid_card_no = 0; 
+        } else {
+            printf("Your input is not valid\n");
+        }
+    }
+
+    while(valid_year){
+        printf("Enter new card expiry year:\n");
+        fgets(user_input, 10000 ,stdin); 
+        if(check_year(user_input, &year)){
+            new.year = year;
+            valid_year = 0; 
+        } else {
+            printf("Your input is not valid\n");
+        }
+    }
+
+    while(valid_month){
+        printf("Enter new card expiry month:\n");
+        fgets(user_input, 10000 ,stdin); 
+        if(check_month(user_input, &month, year)){
+            new.month = month;
+            valid_month = 0; 
+        } else {
+            printf("Your input is not valid\n");
+        }
+    }
+
+    while(valid_cvc){
+        printf("Enter new card cvc:\n");
+        fgets(user_input, 10000 ,stdin);
+        if(check_cvc(user_input, cvc)){
+            strcpy(new.cvc, cvc); 
+            valid_cvc = 0; 
+        } else {
+            printf("Your input is not valid\n");
+        }
+    }
+
+    printf("Print 'Enter' key to view details\n");
+    while ((getchar()) != '\n'); 
 
     printf("CURRENT PAYMENT DETAILS\n");
     printf("Card Number          Expiry Date     CVC \n");
@@ -711,12 +760,13 @@ void update_payment(user_t * users, int index, int * no_of_user){
              users[index].payment.card_number, expiry_date, users[index].payment.cvc);
 
     expiry(expiry_date, new.month, new.year);
+
     printf("NEW PAYMENT DETAILS\n");
     printf("Card Number          Expiry Date     CVC \n");
     printf("-------------------- --------------- ------\n");
     printf("%-20s %-15s %-5s\n\n",
              new.card_number, expiry_date, new.cvc);
-    while ((getchar()) != '\n'); 
+
     printf("Do you want to update new payment details? y/n\n");
     char choice;
     scanf("%c", &choice);
@@ -728,31 +778,90 @@ void update_payment(user_t * users, int index, int * no_of_user){
         strcpy(users[index].payment.cvc, new.cvc);
         save_student_db(users, no_of_user);
     } else if (choice == 'n') {
-        printf("Going back to main without saving");
+        printf("Going back to main without saving\n");
     } else {
-        printf("Invalid choice; going back to menu");
+        printf("Invalid choice; going back to menu\n");
     }
 }
 
 int check_card_number(char * user_input, char * card_number){
-    if(strlen(user_input) > MAX_NO_CARD + 1){ 
+    if(strlen(user_input) != MAX_NO_CARD + 1){ 
         return 0; 
     }
     int i;
-    for(i = 0; i < MAX_NO_CARD + 1 ; i++){
+    user_input[MAX_NO_CARD] ='\0';
+    for(i = 0; i < MAX_NO_CARD; i++){
         if(!is_right_format_number(user_input[i])){
             return 0;
         }
     }
+    for(i = 0; i < MAX_NO_CARD + 1 ; i++){
+        card_number[i] = user_input[i];
+    }
+    return 1;
+}
 
-    for(i = 1; i < strlen(user_input) + 1; i++){ 
-        if(user_input[i] >= 'A' && user_input[i] <= 'Z'){
-            name[i] = user_input[i] + 32;
-        } else if (user_input[i] >= 'a' && user_input[i] <= 'z'){
-            name[i] = user_input[i];
+int check_month(char * user_input, int * month, int year){
+    if(strlen(user_input) > 3){ 
+        return 0; 
+    }
+    int i;
+    char temp[2];
+    user_input[strlen(user_input)] ='\0';
+    for(i = 0; i < 3; i++){
+        temp[i] = user_input[i];
+    }
+    for(i = 0; i < strlen(user_input) - 1; i++){
+        if(!is_right_format_number(temp[i])){
+            return 0;
         }
     }
+    sscanf(temp, "%d", month);
+    if(*month < 1 || *month > 12){
+        return 0;
+    }
+    if(year == 19){
+        if(*month < 6) return 0;
+    }
+    return 1;
+}
 
+int check_year(char * user_input, int * year){
+    if(strlen(user_input) > 3){ 
+        return 0; 
+    }
+    int i;
+    char temp[2];
+    user_input[strlen(user_input)] ='\0';
+    for(i = 0; i < 3; i++){
+        temp[i] = user_input[i];
+    }
+    for(i = 0; i < strlen(user_input) - 1; i++){
+        if(!is_right_format_number(temp[i])){
+            return 0;
+        }
+    }
+    sscanf(temp, "%d", year);
+    if(*year < 19){
+        return 0;
+    }
+    return 1;
+}
+
+int check_cvc(char * user_input, char * cvc){
+    if(strlen(user_input) != MAX_NO_CVC + 1){ 
+        return 0; 
+    }
+    int i;
+    user_input[MAX_NO_CVC] ='\0';
+    for(i = 0; i < MAX_NO_CVC ; i++){
+        if(!is_right_format_number(user_input[i])){
+            return 0;
+        }
+    }
+    for(i = 0; i < MAX_NO_CVC + 1; i++){
+        cvc[i] = user_input[i];
+    } 
     return 1;
 }
 
