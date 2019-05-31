@@ -136,7 +136,6 @@ int is_right_format_number(char c){
     }
     return 0;
 }
-
 /*Insert function protoypes here*/
 void login_as_admin(user_t *users, int *no_of_user) {
     char login_id[5]; 
@@ -145,8 +144,19 @@ void login_as_admin(user_t *users, int *no_of_user) {
 
     while(is_admin){
         printf("Enter your id \n");
+        printf("(or enter EXIT to return back to Main Menu ) \n");
         scanf("%s", login_id);
-        if(!strcmp(login_id, "admin")) { is_admin = 0; } 
+        if(!strcmp(login_id, "admin")) 
+        { 
+        	is_admin = 0; 
+        } 
+        else if (strcmp(login_id, "EXIT")==0) 
+        {
+          main();
+     	} 
+
+
+
         else { printf("Invalid admin username. Please check again! \n"); }
     }
     int right_password = 1;
@@ -174,7 +184,14 @@ void login(user_t * users, int * no_of_user) {
     while ((getchar()) != '\n'); 
     while(existing_user){
         printf("Enter your id: \n");
+        printf("(or enter EXIT to return back to Main Menu ) \n");
+
         fgets(user_input, 10000 ,stdin); 
+
+        if (strcmp(user_input, "EXIT")==10){
+        		main();
+        }
+
         if(check_user_id_input(user_input, &login_id) == 1){
             for(i = 0; i < MAX_NO_USERS; i++){
                 if(login_id == users[i].user_id){
